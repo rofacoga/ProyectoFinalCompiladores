@@ -1,0 +1,77 @@
+PARSER_BEGIN( Compilador )
+package co.edu.uniquindio.compiladores.modelo;
+
+class Compilador {
+	public static void main( String[] arg ) throws ParseException, TokenMgrError {
+		Compilador parser = new Compilador( System.in );
+		parser.start();
+	}
+}
+PARSER_END( Compilador )
+
+SKIP : {
+	" "
+| "\n"
+| "\r"
+| "\r\n"
+| "\t"
+}
+
+TOKEN : {
+  < SUMA : "+" >
+| < NUMERO : (["0"-"9"])+>
+| < RESTA: "-" >
+| < DIVISION : "/" >
+| < MULTIPLICACION : "*" >
+| < EXPONENTE : "^" >
+| < FINAL_LINEA : ";" >
+| < SENO : "sen" >
+| < COSENO : "cos" >
+| < TANGENTE : "tan" >
+| < SECANTE : "sec" >
+| < COSECANTE : "csc" >
+| < COTAGENTE : "cot" >
+| < PARENTESIS_IZQUIERDO : "(" >
+| < PARENTESIS_DERECHO : ")" >
+| < LLAVE_IZQUIERDA : "{" >
+| < LLAVE_DERECHA : "}" >
+| < CORCHETE_IZQUIERDO : "[" >
+| < CORCHETE_DERECHO : "]" >
+| < RAIZ : "rai" >
+| < ENTERO : "ent" >
+| < DOBLE : "dob" >
+| < FLOTANTE : "flot" >
+| < INTEGRAL : "int" >
+| < ASIGNACION : "=" >
+| < PUNTO : "." >
+}
+
+void start():
+{}
+{
+  ( <SUMA>
+    | <NUMERO>
+    | <RESTA>
+    | <DIVISION>
+    | <MULTIPLICACION>
+    | <EXPONENTE>
+    | <FINAL_LINEA>
+    | <SENO>
+    | <COSENO>
+  	| <TANGENTE>
+  	| <SECANTE>
+  	| <COSECANTE>
+  	| <COTAGENTE>
+  	| <PARENTESIS_IZQUIERDO>
+  	| <PARENTESIS_DERECHO>
+  	| <LLAVE_IZQUIERDA>
+  	| <LLAVE_DERECHA>
+  	| <CORCHETE_IZQUIERDO>
+  	| <CORCHETE_DERECHO>
+  	| <RAIZ>
+  	| <ENTERO>
+  	| <DOBLE>
+  	| <FLOTANTE>
+  	| <INTEGRAL>
+  	| <ASIGNACION> )* <EOF>
+}
