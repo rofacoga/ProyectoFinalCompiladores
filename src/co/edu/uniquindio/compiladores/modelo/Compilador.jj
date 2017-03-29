@@ -1,11 +1,43 @@
 PARSER_BEGIN( Compilador )
 package co.edu.uniquindio.compiladores.modelo;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.json.simple.JSONObject;
 
-class Compilador {
-	public static void main( String[] arg ) throws ParseException, TokenMgrError {
-		Compilador parser = new Compilador( System.in );
-		parser.start();
-	}
+public class Compilador {
+
+  protected static JSONObject jsonTransport;
+	
+//	public static void main( String[] arg ) throws ParseException, TokenMgrError {
+//		Compilador parser = new Compilador( System.in );
+//		parser.start();
+//	}
+	
+  public Compilador() {
+	// Nothing to do here!
+  }
+
+  @SuppressWarnings("static-access")
+  public boolean compilar( String codFuente ) {
+    if( codFuente != "" && codFuente != null ) {
+	  InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 )); //StandardCharsets.UTF_8 ) );
+	  Compilador parser = new Compilador( codFuenteStream );//System.in );
+
+	  try {
+	    parser.start();
+	  } catch (ParseException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	  }
+
+	  return true;
+
+    }else {
+      return false;
+    }
+  }
+  
 }
 PARSER_END( Compilador )
 

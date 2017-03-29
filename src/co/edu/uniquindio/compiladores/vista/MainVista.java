@@ -10,13 +10,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -35,6 +32,8 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import co.edu.uniquindio.compiladores.controlador.MainControlador;
+
 /**
  * @author Cesar Taborda
  * @author Yeison Gomez
@@ -42,6 +41,9 @@ import javax.swing.table.DefaultTableModel;
  *
  */
 public class MainVista {
+	
+	private MainControlador mainControlador;
+	
 	/**
 	 * Variable t que ayudara a obtener el tamaño de la pantalla
 	 */
@@ -84,14 +86,17 @@ public class MainVista {
 	final static String tituloArbolDerivac 	= "Árbol de Derivación";
 	final static String tituloErrores 		= "Errores Generados";
 	
-	final static String compiler 	= "Compilador";
-	final static String sinCambios 	= "< No se han guardado los Cambios >";
+	final static String compiler 	 = "Compilador - ";
+	final static String sinCambios 	 = "< No se han guardado los Cambios >";
+	final static String strDocumento = "Documento ";
 	
 	private JFrame 			frame;
 	private JFileChooser 	jFileChooser;
 	private JTextArea 		textArea1;
-	private String 			nombreArchivo;
 	private JTable 			tableSimbolos;
+	
+	private String 			nombreArchivo;
+	private int 			numeroArchivo;
 
 	/**
 	 * Launch the application.
@@ -113,12 +118,16 @@ public class MainVista {
 	 * Create the application.
 	 */
 	public MainVista() {
+		numeroArchivo = 1;
+		nombreArchivo = strDocumento+numeroArchivo;
+		
+		mainControlador = new MainControlador();
 		
 		initialize();
 	}
 	
 	/**
-	 * 
+	 * This method is created to callback set visible the main window in this project
 	 */
 	public void crearVista() {
 		// TODO Auto-generated method stub
@@ -140,7 +149,7 @@ public class MainVista {
 		frame = new JFrame();
 		frame.setResizable(false);
 		frame.setBounds( positionX, positionY, widthWindow, heightWindow ); // frame.setBounds(50, 50, 900, 650);
-		frame.setTitle("Compilador");
+		frame.setTitle( compiler+strDocumento+numeroArchivo );
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -160,6 +169,7 @@ public class MainVista {
 			JMenuItem menuItem11 = new JMenuItem();
 			menuItem11.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					NuevoArchivo( );
 				}
 			});
 			menuItem11.setText("Nuevo Archivo");
@@ -348,12 +358,27 @@ public class MainVista {
 	/**
 	 * 
 	 */
-	public void NuevoArchivo() 
-	{
+	public void NuevoArchivo( ) {
 		
-		if (textArea1.getText().equals("")) {
-			frame.setTitle(compiler);
-			textArea1.setText("");
+		if (! textArea1.getText().equals("") ) { 
+			boolean guardado = false;
+			
+			if ( nombreArchivo == (strDocumento+numeroArchivo) ) {
+				
+				guardado = GuardarComoArchivo();
+				
+				if( guardado ) { 
+					numeroArchivo ++;
+					frame.setTitle(compiler+strDocumento+numeroArchivo);
+					textArea1.setText("");
+				} else { 
+					
+				}
+				
+			} else {
+
+			}
+			
 		} else {
 			
 		}
@@ -393,7 +418,7 @@ public class MainVista {
 			}
 			aux ="";
 			
-			frame.setTitle(compiler + " - " + nombreArchivo);
+			frame.setTitle(compiler + nombreArchivo);
 			
 			textArea1.setText(texto);
 			
@@ -414,21 +439,22 @@ public class MainVista {
 	/**
 	 * 
 	 */
-	public void GuardarArchivo() {
+	public void GuardarArchivo( ) {
 
+	}
+
+	/**
+	 * @return 
+	 * 
+	 */
+	public boolean GuardarComoArchivo( ) {
+		return true;
 	}
 
 	/**
 	 * 
 	 */
-	public void GuardarComoArchivo() {
-
-	}
-
-	/**
-	 * 
-	 */
-	public void Salir() {
+	public void Salir( ) {
 		System.exit(0);
 	}
 
@@ -446,13 +472,17 @@ public class MainVista {
 	/**
 	 * 
 	 */
+	@SuppressWarnings("static-access")
 	public void CompilarCodFuente() {
-		if (textArea1.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(frame, "No hay codigo para analizar... D=");
-		} else {
-			JOptionPane.showMessageDialog(frame, "Compilando...");
+		if ( ! textArea1.getText().isEmpty() ) {
 
-			InputStream stream = new ByteArrayInputStream(textArea1.getText().getBytes(StandardCharsets.UTF_8));
+			JOptionPane.showMessageDialog(frame, "Compilando...");
+			
+			String codFuente = textArea1.getText();
+			
+			mainControlador.compilarCodigofuente(codFuente);
+
+			// InputStream stream = new ByteArrayInputStream(textArea1.getText().getBytes(StandardCharsets.UTF_8));
 
 			System.out.println(
 					"---------- INICIANDO AN\u00c1LISIS L\u00c9XICO PARA EL ARCHIVO " + nombreArchivo + " ----------");
@@ -472,12 +502,15 @@ public class MainVista {
 			System.out.println("no se han hallado errores l\u00e9xicos");
 
 			// LlenarTablaArbol( compilador.getListaSimbolos() );
+		} else {
+			JOptionPane.showMessageDialog(frame, "No hay codigo para analizar... D=");
 		}
 	}
 	
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private void LlenarTablaArbol(ArrayList<String> lista){
 		
 		DefaultTableModel modelo = new DefaultTableModel();
