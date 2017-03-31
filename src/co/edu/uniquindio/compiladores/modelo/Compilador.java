@@ -19,22 +19,25 @@ public class Compilador implements CompiladorConstants {
   }
 
   @SuppressWarnings("static-access")
-  public boolean compilar( String codFuente ) {
+  public String compilar( String codFuente ) {
     if( codFuente != "" && codFuente != null ) {
+
           InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 )); //StandardCharsets.UTF_8 ) );
           Compilador parser = new Compilador( codFuenteStream );//System.in );
 
-          try {
+          String errores = "";
+
+          try{
             parser.start();
-          } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+          }catch (ParseException e){
+                errores += e;
+                ReInit( codFuenteStream );
           }
 
-          return true;
+          return errores;
 
     }else {
-      return false;
+      return "";
     }
   }
 
@@ -42,120 +45,324 @@ public class Compilador implements CompiladorConstants {
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case DIGITOS:
+      case LETRA_MIN:
       case SUMA:
-      case NUMERO:
       case RESTA:
-      case DIVISION:
-      case MULTIPLICACION:
-      case EXPONENTE:
-      case FINAL_LINEA:
       case SENO:
       case COSENO:
       case TANGENTE:
       case SECANTE:
       case COSECANTE:
-      case COTAGENTE:
-      case PARENTESIS_IZQUIERDO:
-      case PARENTESIS_DERECHO:
-      case LLAVE_IZQUIERDA:
-      case LLAVE_DERECHA:
-      case CORCHETE_IZQUIERDO:
-      case CORCHETE_DERECHO:
-      case RAIZ:
-      case ENTERO:
-      case DOBLE:
-      case FLOTANTE:
+      case COTANGENTE:
       case INTEGRAL:
-      case ASIGNACION:
         ;
         break;
       default:
         jj_la1[0] = jj_gen;
         break label_1;
       }
+      linea();
+    }
+    jj_consume_token(0);
+  }
+
+  static final public void linea() throws ParseException {
+    expresionAritmetica();
+    jj_consume_token(FINAL_LINEA);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DIGITOS:
+    case LETRA_MIN:
+    case SUMA:
+    case RESTA:
+    case SENO:
+    case COSENO:
+    case TANGENTE:
+    case SECANTE:
+    case COSECANTE:
+    case COTANGENTE:
+    case INTEGRAL:
+      linea();
+      break;
+    default:
+      jj_la1[1] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void expresionAritmetica() throws ParseException {
+    termino();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SUMA:
+    case RESTA:
+    case DIVISION:
+    case MULTIPLICACION:
+    case EXPONENTE:
+    case MODULO:
+      operadores();
+      expresionAritmetica();
+      break;
+    default:
+      jj_la1[2] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void termino() throws ParseException {
+    factor();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SUMA:
+    case RESTA:
+    case DIVISION:
+    case MULTIPLICACION:
+    case EXPONENTE:
+    case MODULO:
+      operadores();
+      termino();
+      break;
+    default:
+      jj_la1[3] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void operadores() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SUMA:
+      jj_consume_token(SUMA);
+      break;
+    case RESTA:
+      jj_consume_token(RESTA);
+      break;
+    case MULTIPLICACION:
+      jj_consume_token(MULTIPLICACION);
+      break;
+    case DIVISION:
+      jj_consume_token(DIVISION);
+      break;
+    case EXPONENTE:
+      jj_consume_token(EXPONENTE);
+      break;
+    case MODULO:
+      jj_consume_token(MODULO);
+      break;
+    default:
+      jj_la1[4] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void factor() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DIGITOS:
+    case SUMA:
+    case RESTA:
+      numeros();
+      break;
+    case LETRA_MIN:
+      identificador();
+      break;
+    case SENO:
+    case COSENO:
+    case TANGENTE:
+    case SECANTE:
+    case COSECANTE:
+    case COTANGENTE:
+      expresionTrigonometrica();
+      break;
+    case INTEGRAL:
+      integral();
+      break;
+    default:
+      jj_la1[5] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void numeros() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SUMA:
+    case RESTA:
+      signo();
+      break;
+    default:
+      jj_la1[6] = jj_gen;
+      ;
+    }
+    jj_consume_token(DIGITOS);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case PUNTO:
+      jj_consume_token(PUNTO);
+      jj_consume_token(DIGITOS);
+      break;
+    default:
+      jj_la1[7] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void signo() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SUMA:
+      jj_consume_token(SUMA);
+      break;
+    case RESTA:
+      jj_consume_token(RESTA);
+      break;
+    default:
+      jj_la1[8] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void identificador() throws ParseException {
+    label_2:
+    while (true) {
+      letras();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SUMA:
-        jj_consume_token(SUMA);
-        break;
-      case NUMERO:
-        jj_consume_token(NUMERO);
-        break;
-      case RESTA:
-        jj_consume_token(RESTA);
-        break;
-      case DIVISION:
-        jj_consume_token(DIVISION);
-        break;
-      case MULTIPLICACION:
-        jj_consume_token(MULTIPLICACION);
-        break;
-      case EXPONENTE:
-        jj_consume_token(EXPONENTE);
-        break;
-      case FINAL_LINEA:
-        jj_consume_token(FINAL_LINEA);
-        break;
-      case SENO:
-        jj_consume_token(SENO);
-        break;
-      case COSENO:
-        jj_consume_token(COSENO);
-        break;
-      case TANGENTE:
-        jj_consume_token(TANGENTE);
-        break;
-      case SECANTE:
-        jj_consume_token(SECANTE);
-        break;
-      case COSECANTE:
-        jj_consume_token(COSECANTE);
-        break;
-      case COTAGENTE:
-        jj_consume_token(COTAGENTE);
-        break;
-      case PARENTESIS_IZQUIERDO:
-        jj_consume_token(PARENTESIS_IZQUIERDO);
-        break;
-      case PARENTESIS_DERECHO:
-        jj_consume_token(PARENTESIS_DERECHO);
-        break;
-      case LLAVE_IZQUIERDA:
-        jj_consume_token(LLAVE_IZQUIERDA);
-        break;
-      case LLAVE_DERECHA:
-        jj_consume_token(LLAVE_DERECHA);
-        break;
-      case CORCHETE_IZQUIERDO:
-        jj_consume_token(CORCHETE_IZQUIERDO);
-        break;
-      case CORCHETE_DERECHO:
-        jj_consume_token(CORCHETE_DERECHO);
-        break;
-      case RAIZ:
-        jj_consume_token(RAIZ);
-        break;
-      case ENTERO:
-        jj_consume_token(ENTERO);
-        break;
-      case DOBLE:
-        jj_consume_token(DOBLE);
-        break;
-      case FLOTANTE:
-        jj_consume_token(FLOTANTE);
-        break;
-      case INTEGRAL:
-        jj_consume_token(INTEGRAL);
-        break;
-      case ASIGNACION:
-        jj_consume_token(ASIGNACION);
+      case LETRA_MIN:
+        ;
         break;
       default:
-        jj_la1[1] = jj_gen;
+        jj_la1[9] = jj_gen;
+        break label_2;
+      }
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DIGITOS:
+      jj_consume_token(DIGITOS);
+      break;
+    default:
+      jj_la1[10] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void letras() throws ParseException {
+    jj_consume_token(LETRA_MIN);
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case LETRA_MIN:
+      case LETRA_MAY:
+        ;
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        break label_3;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case LETRA_MIN:
+        jj_consume_token(LETRA_MIN);
+        break;
+      case LETRA_MAY:
+        jj_consume_token(LETRA_MAY);
+        break;
+      default:
+        jj_la1[12] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
     }
-    jj_consume_token(0);
+  }
+
+  static final public void expresionTrigonometrica() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SENO:
+      jj_consume_token(SENO);
+      teta();
+      break;
+    case COSENO:
+      jj_consume_token(COSENO);
+      teta();
+      break;
+    case TANGENTE:
+      jj_consume_token(TANGENTE);
+      teta();
+      break;
+    case COTANGENTE:
+      jj_consume_token(COTANGENTE);
+      teta();
+      break;
+    case SECANTE:
+      jj_consume_token(SECANTE);
+      teta();
+      break;
+    case COSECANTE:
+      jj_consume_token(COSECANTE);
+      teta();
+      break;
+    default:
+      jj_la1[13] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void teta() throws ParseException {
+    jj_consume_token(PARENTESIS_IZQUIERDO);
+    factorSimple();
+    jj_consume_token(PARENTESIS_DERECHO);
+  }
+
+  static final public void integral() throws ParseException {
+    jj_consume_token(INTEGRAL);
+    jj_consume_token(PARENTESIS_IZQUIERDO);
+    factorSimple();
+    jj_consume_token(DX_INTEGRAL);
+    jj_consume_token(COMA);
+    limitesIntg();
+    jj_consume_token(COMA);
+    limitesIntg();
+    jj_consume_token(PARENTESIS_DERECHO);
+  }
+
+  static final public void limitesIntg() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case LETRA_MIN:
+      identificador();
+      break;
+    case DIGITOS:
+    case SUMA:
+    case RESTA:
+      numeros();
+      break;
+    default:
+      jj_la1[14] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void factorSimple() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DIGITOS:
+    case SUMA:
+    case RESTA:
+      numeros();
+      break;
+    case LETRA_MIN:
+      identificador();
+      break;
+    case SENO:
+    case COSENO:
+    case TANGENTE:
+    case SECANTE:
+    case COSECANTE:
+    case COTANGENTE:
+      expresionTrigonometrica();
+      break;
+    case INTEGRAL:
+      integral();
+      break;
+    default:
+      jj_la1[15] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
   }
 
   static private boolean jj_initialized_once = false;
@@ -168,13 +375,18 @@ public class Compilador implements CompiladorConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[2];
+  static final private int[] jj_la1 = new int[16];
   static private int[] jj_la1_0;
+  static private int[] jj_la1_1;
   static {
       jj_la1_init_0();
+      jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x7fffffc0,0x7fffffc0,};
+      jj_la1_0 = new int[] {0x801f86c0,0x801f86c0,0x7e00,0x7e00,0x7e00,0x801f86c0,0x600,0x0,0x600,0x80,0x40,0x180,0x180,0x1f8000,0x6c0,0x801f86c0,};
+   }
+   private static void jj_la1_init_1() {
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -195,7 +407,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -209,7 +421,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -226,7 +438,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -236,7 +448,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -252,7 +464,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -261,7 +473,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 2; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 16; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -312,21 +524,24 @@ public class Compilador implements CompiladorConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[32];
+    boolean[] la1tokens = new boolean[37];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 16; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
             la1tokens[j] = true;
           }
+          if ((jj_la1_1[i] & (1<<j)) != 0) {
+            la1tokens[32+j] = true;
+          }
         }
       }
     }
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 37; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

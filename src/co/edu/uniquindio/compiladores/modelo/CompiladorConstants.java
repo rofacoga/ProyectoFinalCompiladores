@@ -11,57 +11,67 @@ public interface CompiladorConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int SUMA = 6;
+  int DIGITOS = 6;
   /** RegularExpression Id. */
-  int NUMERO = 7;
+  int LETRA_MIN = 7;
   /** RegularExpression Id. */
-  int RESTA = 8;
+  int LETRA_MAY = 8;
   /** RegularExpression Id. */
-  int DIVISION = 9;
+  int SUMA = 9;
   /** RegularExpression Id. */
-  int MULTIPLICACION = 10;
+  int RESTA = 10;
   /** RegularExpression Id. */
-  int EXPONENTE = 11;
+  int DIVISION = 11;
   /** RegularExpression Id. */
-  int FINAL_LINEA = 12;
+  int MULTIPLICACION = 12;
   /** RegularExpression Id. */
-  int SENO = 13;
+  int EXPONENTE = 13;
   /** RegularExpression Id. */
-  int COSENO = 14;
+  int MODULO = 14;
   /** RegularExpression Id. */
-  int TANGENTE = 15;
+  int SENO = 15;
   /** RegularExpression Id. */
-  int SECANTE = 16;
+  int COSENO = 16;
   /** RegularExpression Id. */
-  int COSECANTE = 17;
+  int TANGENTE = 17;
   /** RegularExpression Id. */
-  int COTAGENTE = 18;
+  int SECANTE = 18;
   /** RegularExpression Id. */
-  int PARENTESIS_IZQUIERDO = 19;
+  int COSECANTE = 19;
   /** RegularExpression Id. */
-  int PARENTESIS_DERECHO = 20;
+  int COTANGENTE = 20;
   /** RegularExpression Id. */
-  int LLAVE_IZQUIERDA = 21;
+  int PARENTESIS_IZQUIERDO = 21;
   /** RegularExpression Id. */
-  int LLAVE_DERECHA = 22;
+  int PARENTESIS_DERECHO = 22;
   /** RegularExpression Id. */
-  int CORCHETE_IZQUIERDO = 23;
+  int LLAVE_IZQUIERDA = 23;
   /** RegularExpression Id. */
-  int CORCHETE_DERECHO = 24;
+  int LLAVE_DERECHA = 24;
   /** RegularExpression Id. */
-  int RAIZ = 25;
+  int CORCHETE_IZQUIERDO = 25;
   /** RegularExpression Id. */
-  int ENTERO = 26;
+  int CORCHETE_DERECHO = 26;
   /** RegularExpression Id. */
-  int DOBLE = 27;
+  int RAIZ = 27;
   /** RegularExpression Id. */
-  int FLOTANTE = 28;
+  int ENTERO = 28;
   /** RegularExpression Id. */
-  int INTEGRAL = 29;
+  int DOBLE = 29;
   /** RegularExpression Id. */
-  int ASIGNACION = 30;
+  int FLOTANTE = 30;
   /** RegularExpression Id. */
-  int PUNTO = 31;
+  int INTEGRAL = 31;
+  /** RegularExpression Id. */
+  int DX_INTEGRAL = 32;
+  /** RegularExpression Id. */
+  int ASIGNACION = 33;
+  /** RegularExpression Id. */
+  int COMA = 34;
+  /** RegularExpression Id. */
+  int PUNTO = 35;
+  /** RegularExpression Id. */
+  int FINAL_LINEA = 36;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -74,32 +84,37 @@ public interface CompiladorConstants {
     "\"\\r\"",
     "\"\\r\\n\"",
     "\"\\t\"",
+    "<DIGITOS>",
+    "<LETRA_MIN>",
+    "<LETRA_MAY>",
     "\"+\"",
-    "<NUMERO>",
     "\"-\"",
     "\"/\"",
     "\"*\"",
     "\"^\"",
-    "\";\"",
-    "\"sen\"",
-    "\"cos\"",
-    "\"tan\"",
-    "\"sec\"",
-    "\"csc\"",
-    "\"cot\"",
+    "\"%\"",
+    "\"Sen\"",
+    "\"Cos\"",
+    "\"Tan\"",
+    "\"Sec\"",
+    "\"Csc\"",
+    "\"Cot\"",
     "\"(\"",
     "\")\"",
     "\"{\"",
     "\"}\"",
     "\"[\"",
     "\"]\"",
-    "\"rai\"",
-    "\"ent\"",
-    "\"dob\"",
-    "\"flot\"",
-    "\"int\"",
+    "\"Rai\"",
+    "\"Ent\"",
+    "\"Dob\"",
+    "\"Flot\"",
+    "\"Intg\"",
+    "\"Dx\"",
     "\"=\"",
+    "\",\"",
     "\".\"",
+    "\";\"",
   };
 
 }

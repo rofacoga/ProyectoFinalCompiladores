@@ -33,6 +33,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import co.edu.uniquindio.compiladores.controlador.MainControlador;
+import co.edu.uniquindio.compiladores.modelo.ParseException;
 
 /**
  * @author Cesar Taborda
@@ -476,27 +477,24 @@ public class MainVista {
 	public void CompilarCodFuente() {
 		if ( ! textArea1.getText().isEmpty() ) {
 
-			JOptionPane.showMessageDialog(frame, "Compilando...");
+			//JOptionPane.showMessageDialog(frame, "Compilando...");
 			
+			String errores = "";
 			String codFuente = textArea1.getText();
+			String[] parts = codFuente.split("\n");
 			
-			mainControlador.compilarCodigofuente(codFuente);
+			// System.out.println(codFuente);
+			// System.out.println(parts.length);
+			
+			errores = mainControlador.compilarCodigofuente( parts );
 
 			// InputStream stream = new ByteArrayInputStream(textArea1.getText().getBytes(StandardCharsets.UTF_8));
 
 			System.out.println(
 					"---------- INICIANDO AN\u00c1LISIS L\u00c9XICO PARA EL ARCHIVO " + nombreArchivo + " ----------");
-			System.out.println("Ingrese el c\u00f3digo a analizar:");
+			System.out.println("C\u00f3digo a Analizar:");
 
-//			@SuppressWarnings("unused")
-//			Compilador parser = new Compilador(stream);
-//			// parser.TokenList();
-//			try {
-//				Compilador.Programa();
-//			} catch (ParseException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			
 
 			System.out.println("Analisis terminado:");
 			System.out.println("no se han hallado errores l\u00e9xicos");

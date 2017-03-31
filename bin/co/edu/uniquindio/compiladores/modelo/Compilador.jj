@@ -19,22 +19,25 @@ public class Compilador {
   }
 
   @SuppressWarnings("static-access")
-  public boolean compilar( String codFuente ) {
+  public String compilar( String codFuente ) {
     if( codFuente != "" && codFuente != null ) {
+      
 	  InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 )); //StandardCharsets.UTF_8 ) );
 	  Compilador parser = new Compilador( codFuenteStream );//System.in );
 
-	  try {
+  	  String errores = "";
+
+	  try{
 	    parser.start();
-	  } catch (ParseException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	  }catch (ParseException e){
+		errores += e;
+		ReInit( codFuenteStream );
 	  }
 
-	  return true;
+	  return errores;
 
     }else {
-      return false;
+      return "";
     }
   }
   
@@ -50,60 +53,129 @@ SKIP : {
 }
 
 TOKEN : {
-  < SUMA : "+" >
-| < NUMERO : (["0"-"9"])+>
-| < RESTA: "-" >
-| < DIVISION : "/" >
-| < MULTIPLICACION : "*" >
-| < EXPONENTE : "^" >
-| < FINAL_LINEA : ";" >
-| < SENO : "sen" >
-| < COSENO : "cos" >
-| < TANGENTE : "tan" >
-| < SECANTE : "sec" >
-| < COSECANTE : "csc" >
-| < COTAGENTE : "cot" >
+  < DIGITOS 			: (["0"-"9"])+ >
+| < LETRA_MIN 			: (["a"-"z"]) >
+| < LETRA_MAY 			: (["A"-"Z"]) >
+| < SUMA 				: "+" >
+| < RESTA 				: "-" >
+| < DIVISION 			: "/" >
+| < MULTIPLICACION 		: "*" >
+| < EXPONENTE 			: "^" >
+| < MODULO 				: "%" >
+| < SENO 				: "Sen" >
+| < COSENO 				: "Cos" >
+| < TANGENTE 			: "Tan" >
+| < SECANTE 			: "Sec" >
+| < COSECANTE 			: "Csc" >
+| < COTANGENTE 			: "Cot" >
 | < PARENTESIS_IZQUIERDO : "(" >
-| < PARENTESIS_DERECHO : ")" >
-| < LLAVE_IZQUIERDA : "{" >
-| < LLAVE_DERECHA : "}" >
-| < CORCHETE_IZQUIERDO : "[" >
-| < CORCHETE_DERECHO : "]" >
-| < RAIZ : "rai" >
-| < ENTERO : "ent" >
-| < DOBLE : "dob" >
-| < FLOTANTE : "flot" >
-| < INTEGRAL : "int" >
-| < ASIGNACION : "=" >
-| < PUNTO : "." >
+| < PARENTESIS_DERECHO 	: ")" >
+| < LLAVE_IZQUIERDA 	: "{" >
+| < LLAVE_DERECHA 		: "}" >
+| < CORCHETE_IZQUIERDO 	: "[" >
+| < CORCHETE_DERECHO 	: "]" >
+| < RAIZ 				: "Rai" >
+| < ENTERO 				: "Ent" >
+| < DOBLE 				: "Dob" >
+| < FLOTANTE 			: "Flot" >
+| < INTEGRAL 			: "Intg" >
+| < DX_INTEGRAL 		: "Dx" >
+| < ASIGNACION 			: "=" >
+| < COMA 				: "," >
+| < PUNTO 				: "." >
+| < FINAL_LINEA 		: ";" >
 }
 
 void start():
 {}
 {
-  ( <SUMA>
-    | <NUMERO>
-    | <RESTA>
-    | <DIVISION>
-    | <MULTIPLICACION>
-    | <EXPONENTE>
-    | <FINAL_LINEA>
-    | <SENO>
-    | <COSENO>
-  	| <TANGENTE>
-  	| <SECANTE>
-  	| <COSECANTE>
-  	| <COTAGENTE>
-  	| <PARENTESIS_IZQUIERDO>
-  	| <PARENTESIS_DERECHO>
-  	| <LLAVE_IZQUIERDA>
-  	| <LLAVE_DERECHA>
-  	| <CORCHETE_IZQUIERDO>
-  	| <CORCHETE_DERECHO>
-  	| <RAIZ>
-  	| <ENTERO>
-  	| <DOBLE>
-  	| <FLOTANTE>
-  	| <INTEGRAL>
-  	| <ASIGNACION> )* <EOF>
+  ( linea() )* <EOF>
+}
+
+void linea():
+{}
+{
+  expresionAritmetica() < FINAL_LINEA > [ linea() ]
+}
+
+void expresionAritmetica():
+{}
+{
+  termino() [ operadores() expresionAritmetica() ]
+}
+
+void termino():
+{}
+{
+  factor() [ operadores() termino() ]
+}
+
+void operadores():
+{}
+{
+  < SUMA > | < RESTA > | < MULTIPLICACION > | < DIVISION > | < EXPONENTE > | < MODULO >
+}
+
+void factor():
+{}
+{
+  numeros() | identificador() | expresionTrigonometrica() | integral() 
+}
+
+void numeros():
+{} {
+  [signo()] < DIGITOS > [ < PUNTO > < DIGITOS >]
+}
+
+void signo():
+{}
+{
+  < SUMA > | < RESTA >
+}
+
+void identificador():
+{}
+{
+  ( letras() )+ [ < DIGITOS > ]
+}
+
+void letras():
+{}
+{
+  < LETRA_MIN > ( < LETRA_MIN > | < LETRA_MAY > )*
+}
+
+void expresionTrigonometrica():
+{}
+{
+  < SENO > teta()
+  | < COSENO > teta()
+  | < TANGENTE > teta()
+  | < COTANGENTE > teta()
+  | < SECANTE > teta()
+  | < COSECANTE > teta()
+}
+
+void teta():
+{}
+{
+  < PARENTESIS_IZQUIERDO > factorSimple() < PARENTESIS_DERECHO >
+}
+
+void integral():
+{}
+{
+  < INTEGRAL > < PARENTESIS_IZQUIERDO > factorSimple() < DX_INTEGRAL > < COMA > limitesIntg() < COMA > limitesIntg() < PARENTESIS_DERECHO >
+}
+
+void limitesIntg():
+{}
+{
+  identificador() | numeros()
+}
+
+void factorSimple():
+{}
+{
+  numeros() | identificador() | expresionTrigonometrica() | integral() 
 }
