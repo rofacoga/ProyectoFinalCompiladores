@@ -10,10 +10,10 @@ import co.edu.uniquindio.compiladores.vista.MainVista;
 import org.json.simple.JSONObject;
 
 /**
+ * 
  * @author Cesar Taborda
  * @author Yeison Gomez
  * @author Rogers Cordoba
- *
  */
 public class MainControlador {
 	protected static Compilador mainCompilador;
@@ -38,7 +38,7 @@ public class MainControlador {
 				
 		for (int i = 0; i < codFuente.length; i++) {
 			/*****************************************************************
-			  Primer Manejo de errores, aquí notamos que solo tenemos un tipo
+			  Primer Manejo de errores, aquï¿½ notamos que solo tenemos un tipo
 			  de error el error de "Se esperaba otro componente lexico"
 			*****************************************************************/
 			completo += mainCompilador.compilar( codFuente[i] );

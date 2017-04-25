@@ -5,9 +5,17 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.json.simple.JSONObject;
 
+/**
+ * 
+ * @author Cesar Taborda
+ * @author Yeison Gomez
+ * @author Rogers Cordoba
+ */
 public class Compilador {
 
   protected static JSONObject jsonTransport;
+  private static String resultado;
+  private static String errores;
 	
 //	public static void main( String[] arg ) throws ParseException, TokenMgrError {
 //		Compilador parser = new Compilador( System.in );
@@ -20,6 +28,7 @@ public class Compilador {
 
   @SuppressWarnings("static-access")
   public String compilar( String codFuente ) {
+    
     if( codFuente != "" && codFuente != null ) {
       
 	  InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 )); //StandardCharsets.UTF_8 ) );
@@ -27,11 +36,24 @@ public class Compilador {
 
   	  String errores = "";
 
-	  try{
-	    parser.start();
-	  }catch (ParseException e){
-		errores += e;
-		ReInit( codFuenteStream );
+	  try {
+	  	parser.start();
+	  	while (true) {
+	  		try {
+	  			switch (parser.one_line()) {
+	  			case -1:
+	  				System.exit(0);
+	  			default:
+	  				break;
+	  			}
+	  		} catch (ParseException x) {
+	  			System.out.println("Finalizando");
+	  			throw x;
+	  		}
+	  	}
+	  } catch (ParseException e) {
+	  	errores += e;
+	  	ReInit(codFuenteStream);
 	  }
 
 	  return errores;
@@ -39,6 +61,14 @@ public class Compilador {
     }else {
       return "";
     }
+  }
+
+  public String getErrores() {
+	return errores;
+  }
+
+  public String getResultado() {
+	return resultado;
   }
   
 }
@@ -86,6 +116,26 @@ TOKEN : {
 | < FINAL_LINEA 		: ";" >
 }
 
+
+// ------------------------------------------------------------
+// -- Inicio de codigo del compilador para el analisis del
+// --- codigo fuente...
+// ------------------------------------------------------------
+int one_line() :
+{}
+{
+	try {
+	LOOKAHEAD(2)
+	
+	start() <FINAL_LINEA> { return 1; }
+		| <FINAL_LINEA> { return 0; }
+		| <EOF> { return -1; }
+	} catch(ParseException e) {
+		error_skipto(FINAL_LINEA);
+		return 1;
+	}
+}
+
 void start():
 {}
 {
@@ -122,8 +172,14 @@ void factor():
   numeros() | identificador() | expresionTrigonometrica() | integral() 
 }
 
-void numeros():
-{} {
+Object numeros():
+{
+  // para retornar la imagen
+  return ( Token.toString().matches("[+-]?\\d*") && Token.toString().equals("")==false )
+  			? new DatosToken( "entero", Integer.parseInt( Token.toString() ) )
+  			: new DatosToken( "doble", Double.parseDouble( Token.toString() ) );
+}
+{
   [signo()] < DIGITOS > [ < PUNTO > < DIGITOS >]
 }
 
@@ -178,4 +234,23 @@ void factorSimple():
 {}
 {
   numeros() | identificador() | expresionTrigonometrica() | integral() 
+}
+
+// ------------------------------------------------------------
+// -- Parte de codigo de java para el salto de errores
+// ------------------------------------------------------------
+JAVACODE
+void error_skipto(int kind) {
+	ParseException e = generateParseException(); // Genera el error sintactico
+	errores +=  e.toString()+"\n";
+	System.out.println( e.toString()+"\n" ); // Imprime el mensaje
+	
+	Token t;
+	
+	do {
+		t = getNextToken();
+	} while (t.kind != kind);
+	// El ciclo de arriba consume todos los tokens hasta encontrar el token tipo
+	// Se usa un do-while por que el toke actual, es aquel que esta
+	//inmediantamente antes del token erroneo
 }
