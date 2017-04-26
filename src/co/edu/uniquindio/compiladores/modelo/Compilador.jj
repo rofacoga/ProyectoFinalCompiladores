@@ -3,7 +3,7 @@ package co.edu.uniquindio.compiladores.modelo;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import org.json.simple.JSONObject;
+// import org.json.simple.JSONObject;
 
 /**
  * 
@@ -12,10 +12,9 @@ import org.json.simple.JSONObject;
  * @author Rogers Cordoba
  */
 public class Compilador {
-
-  protected static JSONObject jsonTransport;
   private static String resultado;
   private static String errores;
+  private static Compilador parser = null;
 	
 //	public static void main( String[] arg ) throws ParseException, TokenMgrError {
 //		Compilador parser = new Compilador( System.in );
@@ -27,47 +26,43 @@ public class Compilador {
   }
 
   @SuppressWarnings("static-access")
-  public String compilar( String codFuente ) {
+  public void compilar( String codFuente ) throws ParseException, TokenMgrError {
     
     if( codFuente != "" && codFuente != null ) {
       
 	  InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 )); //StandardCharsets.UTF_8 ) );
-	  Compilador parser = new Compilador( codFuenteStream );//System.in );
+	  // Compilador parser = new Compilador( codFuenteStream );//System.in );
+	  if( parser==null) parser = new Compilador( codFuenteStream ); else  ReInit( codFuenteStream );
 
-  	  String errores = "";
-
-	  try {
-	  	parser.start();
-	  	while (true) {
-	  		try {
-	  			switch (parser.one_line()) {
-	  			case -1:
-	  				System.exit(0);
-	  			default:
-	  				break;
-	  			}
-	  		} catch (ParseException x) {
-	  			System.out.println("Finalizando");
-	  			throw x;
-	  		}
-	  	}
-	  } catch (ParseException e) {
-	  	errores += e;
-	  	ReInit(codFuenteStream);
+	  while (true) {
+	 	try {
+	 	  switch (parser.one_line()) {
+	 		case -1:
+	 		  System.out.println("Final de Compilación.");
+	 		  this.resultado += "\n"+"Final de Compilación.";
+	 		  return;
+	 		  // System.exit(0);
+	 	  	default:
+	 		  break;
+	 	  }
+	 	} catch (ParseException x) {
+	 	  errores += "Finalizando con Errores ParseException..."+"\n";
+	 	  System.out.println("Finalizando con Errores ParseException...");
+	 	  throw x;
+	 	} catch (TokenMgrError y) {
+	 	  errores += "Finalizando con Errores TokenMgrError..."+"\n";
+	 	  System.out.println("Finalizando con Errores TokenMgrError...");
+	 	  throw y;
+	 	}
 	  }
-
-	  return errores;
-
-    }else {
-      return "";
     }
   }
 
-  public String getErrores() {
+  public static String getErrores() {
 	return errores;
   }
 
-  public String getResultado() {
+  public static String getResultado() {
 	return resultado;
   }
   
@@ -75,7 +70,7 @@ public class Compilador {
 PARSER_END( Compilador )
 
 SKIP : {
-	" "
+" "
 | "\n"
 | "\r"
 | "\r\n"
@@ -127,7 +122,7 @@ int one_line() :
 	try {
 	LOOKAHEAD(2)
 	
-	start() <FINAL_LINEA> { return 1; }
+	expresionAritmetica() <FINAL_LINEA> { return 1; }
 		| <FINAL_LINEA> { return 0; }
 		| <EOF> { return -1; }
 	} catch(ParseException e) {
@@ -151,7 +146,21 @@ void linea():
 void expresionAritmetica():
 {}
 {
-  termino() [ operadores() expresionAritmetica() ]
+  declaracionVariable()  
+| termino() [ operadores() expresionAritmetica() ]
+}
+
+void declaracionVariable():
+{}
+{
+  tipoVariable() identificador() [ < ASIGNACION > factor() ]
+}
+
+void tipoVariable():
+{}
+{
+  < ENTERO >
+| < DOBLE >
 }
 
 void termino():
@@ -172,12 +181,12 @@ void factor():
   numeros() | identificador() | expresionTrigonometrica() | integral() 
 }
 
-Object numeros():
+void numeros(): // Object numeros():
 {
   // para retornar la imagen
-  return ( Token.toString().matches("[+-]?\\d*") && Token.toString().equals("")==false )
+  /* return ( Token.toString().matches("[+-]?\\d*") && Token.toString().equals("")==false )
   			? new DatosToken( "entero", Integer.parseInt( Token.toString() ) )
-  			: new DatosToken( "doble", Double.parseDouble( Token.toString() ) );
+  			: new DatosToken( "doble", Double.parseDouble( Token.toString() ) ); */
 }
 {
   [signo()] < DIGITOS > [ < PUNTO > < DIGITOS >]
@@ -192,7 +201,7 @@ void signo():
 void identificador():
 {}
 {
-  ( letras() )+ [ < DIGITOS > ]
+  letras() [ < DIGITOS > ]
 }
 
 void letras():
@@ -241,9 +250,10 @@ void factorSimple():
 // ------------------------------------------------------------
 JAVACODE
 void error_skipto(int kind) {
+	System.out.println( "Error!!!\n" ); // Imprime el mensaje
 	ParseException e = generateParseException(); // Genera el error sintactico
-	errores +=  e.toString()+"\n";
 	System.out.println( e.toString()+"\n" ); // Imprime el mensaje
+	this.errores +=  e.toString()+"\n";
 	
 	Token t;
 	

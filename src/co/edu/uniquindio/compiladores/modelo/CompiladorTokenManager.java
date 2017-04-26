@@ -3,7 +3,6 @@ package co.edu.uniquindio.compiladores.modelo;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import org.json.simple.JSONObject;
 
 /** Token Manager. */
 public class CompiladorTokenManager implements CompiladorConstants

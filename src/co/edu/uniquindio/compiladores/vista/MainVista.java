@@ -34,12 +34,14 @@ import javax.swing.table.DefaultTableModel;
 
 import co.edu.uniquindio.compiladores.controlador.MainControlador;
 import co.edu.uniquindio.compiladores.modelo.ParseException;
+import co.edu.uniquindio.compiladores.modelo.TokenMgrError;
 
 /**
+ * 
+ * 
  * @author Cesar Taborda
  * @author Yeison Gomez
  * @author Rogers Cordoba
- *
  */
 public class MainVista {
 	
@@ -85,7 +87,7 @@ public class MainVista {
 	final static String tituloCodigoFuente 	= "Compilador";
 	final static String tituloTablaSimbolos = "Tabla de Simbolos";
 	final static String tituloArbolDerivac 	= "Árbol de Derivación";
-	final static String tituloErrores 		= "Errores Generados";
+	final static String tituloErrores 		= "Backlog";
 	
 	final static String compiler 	 = "Compilador - ";
 	final static String sinCambios 	 = "< No se han guardado los Cambios >";
@@ -93,7 +95,8 @@ public class MainVista {
 	
 	private JFrame 			frame;
 	private JFileChooser 	jFileChooser;
-	private JTextArea 		textArea1;
+	private JTextArea 		codFuenteTxtArea;			
+	private JTextArea 		erroresTxtArea;
 	private JTable 			tableSimbolos;
 	
 	private String 			nombreArchivo;
@@ -251,10 +254,10 @@ public class MainVista {
 			scrollPane.setBounds( padding, padding, (widthPanelCodigo-(padding*4)), (heightPanelCodigo*3/4) );
 			panelCodigoFuente.add(scrollPane);
 
-			textArea1 = new JTextArea();
-			textArea1.setFont(new Font("Consolas", Font.PLAIN, 13));
-			TextLineNumber tlnCodFuente = new TextLineNumber(textArea1);
-			scrollPane.setViewportView(textArea1);
+			codFuenteTxtArea = new JTextArea();
+			codFuenteTxtArea.setFont(new Font("Consolas", Font.PLAIN, 13));
+			TextLineNumber tlnCodFuente = new TextLineNumber(codFuenteTxtArea);
+			scrollPane.setViewportView(codFuenteTxtArea);
 			scrollPane.setRowHeaderView(tlnCodFuente);
 
 			Label lblcodfuente = new Label();
@@ -343,8 +346,8 @@ public class MainVista {
 			scrollPaneErrores.setBounds(padding, (padding+heightLabel), (widthPanelErrores-(padding*2)), (heightPanelErrores-((padding*3)+heightLabel)) );
 			panelErrores.add(scrollPaneErrores);
 
-			JTextArea textArea4 = new JTextArea();
-			scrollPaneErrores.setViewportView(textArea4);
+			erroresTxtArea = new JTextArea();
+			scrollPaneErrores.setViewportView(erroresTxtArea);
 
 		}
 
@@ -361,7 +364,7 @@ public class MainVista {
 	 */
 	public void NuevoArchivo( ) {
 		
-		if (! textArea1.getText().equals("") ) { 
+		if (! codFuenteTxtArea.getText().equals("") ) { 
 			boolean guardado = false;
 			
 			if ( nombreArchivo == (strDocumento+numeroArchivo) ) {
@@ -371,7 +374,7 @@ public class MainVista {
 				if( guardado ) { 
 					numeroArchivo ++;
 					frame.setTitle(compiler+strDocumento+numeroArchivo);
-					textArea1.setText("");
+					codFuenteTxtArea.setText("");
 				} else { 
 					
 				}
@@ -393,8 +396,8 @@ public class MainVista {
 		try {
 			/** llamamos el metodo que permite cargar la ventana */
 			jFileChooser = new JFileChooser();
-			FileNameExtensionFilter filtro = new FileNameExtensionFilter("SHTML", "shtml");
-			jFileChooser.setFileFilter(filtro);
+			jFileChooser.setFileFilter( new FileNameExtensionFilter( "Files Extension CRY", "cry" ) );
+			jFileChooser.setFileFilter( new FileNameExtensionFilter( "Files Extension TXT", "txt" ) );
 			jFileChooser.showOpenDialog(null);
 			/** abrimos el archivo seleccionado */
 			File abre = jFileChooser.getSelectedFile();
@@ -421,7 +424,7 @@ public class MainVista {
 			
 			frame.setTitle(compiler + nombreArchivo);
 			
-			textArea1.setText(texto);
+			codFuenteTxtArea.setText(texto);
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -475,29 +478,45 @@ public class MainVista {
 	 */
 	@SuppressWarnings("static-access")
 	public void CompilarCodFuente() {
-		if ( ! textArea1.getText().isEmpty() ) {
+		if ( ! codFuenteTxtArea.getText().trim().isEmpty() ) {
 
 			//JOptionPane.showMessageDialog(frame, "Compilando...");
 			
-			String errores = "";
-			String codFuente = textArea1.getText();
-			String[] parts = codFuente.split("\n");
+			String errores 		= "";
+			String resultados 	= "";
+			String codFuente 	= codFuenteTxtArea.getText().trim();
 			
-			// System.out.println(codFuente);
-			// System.out.println(parts.length);
+			// String[] parts 		= codFuente.split("\n");
+			// System.out.println( codFuente );
+			// System.out.println( "\n" );
+			// System.out.println( parts );
+			// System.out.println( "\n" );
+			// System.out.println( parts.length);
+			// System.out.println( "\n" );
 			
-			errores = mainControlador.compilarCodigofuente( parts );
+			mainControlador = new MainControlador();
+			
+			try {
+				mainControlador.compilarCodigofuente( codFuente );
+				errores 	= mainControlador.getErrores();
+				resultados 	= mainControlador.getResultado();
+//				errores = mainControlador.compilarCodigofuente( parts );
+			} catch (ParseException | TokenMgrError e) {
+				// TODO Auto-generated catch block
+				System.out.println("Errores!!!");
+				e.printStackTrace();
+			}
+			
+			erroresTxtArea.setText("");
+			erroresTxtArea.setText( errores+resultados );
 
 			// InputStream stream = new ByteArrayInputStream(textArea1.getText().getBytes(StandardCharsets.UTF_8));
 
-			System.out.println(
-					"---------- INICIANDO AN\u00c1LISIS L\u00c9XICO PARA EL ARCHIVO " + nombreArchivo + " ----------");
-			System.out.println("C\u00f3digo a Analizar:");
-
-			
-
-			System.out.println("Analisis terminado:");
-			System.out.println("no se han hallado errores l\u00e9xicos");
+			// System.out.println(
+			//		"---------- INICIANDO AN\u00c1LISIS L\u00c9XICO PARA EL ARCHIVO " + nombreArchivo + " ----------");
+			// System.out.println("C\u00f3digo a Analizar:");
+			// System.out.println("Analisis terminado:");
+			// System.out.println("no se han hallado errores l\u00e9xicos");
 
 			// LlenarTablaArbol( compilador.getListaSimbolos() );
 		} else {
