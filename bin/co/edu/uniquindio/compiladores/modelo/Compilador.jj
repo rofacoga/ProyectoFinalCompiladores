@@ -38,8 +38,8 @@ public class Compilador {
 	 	try {
 	 	  switch (parser.one_line()) {
 	 		case -1:
-	 		  System.out.println("Final de Compilación.");
-	 		  this.resultado += "\n"+"Final de Compilación.";
+	 		  System.out.println("Final de Compilaciï¿½n.");
+	 		  this.resultado += "\n"+"Final de Compilaciï¿½n.";
 	 		  return;
 	 		  // System.exit(0);
 	 	  	default:
@@ -243,6 +243,12 @@ void factorSimple():
 {}
 {
   numeros() | identificador() | expresionTrigonometrica() | integral() 
+}
+
+void matriz():
+{}
+{
+  
 }
 
 // ------------------------------------------------------------
