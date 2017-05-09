@@ -30,27 +30,31 @@ public class Compilador implements CompiladorConstants {
 
     if( codFuente != "" && codFuente != null ) {
 
-          InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 )); //StandardCharsets.UTF_8 ) );
-          // Compilador parser = new Compilador( codFuenteStream );//System.in );
+          InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 ));
+
           if( parser==null) parser = new Compilador( codFuenteStream ); else  ReInit( codFuenteStream );
 
           while (true) {
                 try {
                   switch (parser.one_line()) {
                         case -1:
-                          System.out.println("Finalizando");
+                          System.out.println("Final de Compilaci\ufffdn.");
+                          this.resultado += "\u005cn"+"Final de Compilaci\ufffdn.";
                           return;
                           // System.exit(0);
                         default:
                           break;
                   }
                 } catch (ParseException x) {
-                  System.out.println("Finalizando");
+                  errores += "Finalizando con Errores ParseException..."+"\u005cn";
+                  System.out.println("Finalizando con Errores ParseException...");
                   throw x;
-                } catch (TokenMgrError y) {
-                  System.out.println("Finalizando");
-                  throw y;
                 }
+//	 	catch (TokenMgrError y) {
+//	 	  errores += "Finalizando con Errores TokenMgrError..."+"\n";
+//	 	  System.out.println("Finalizando con Errores TokenMgrError...");
+//	 	  throw y;
+//	 	}
           }
     }
   }
@@ -467,8 +471,9 @@ public class Compilador implements CompiladorConstants {
   static void error_skipto(int kind) throws ParseException {
         System.out.println( "Error!!!\u005cn" ); // Imprime el mensaje
         ParseException e = generateParseException(); // Genera el error sintactico
-        System.out.println( e.toString()+"\u005cn" ); // Imprime el mensaje
-        errores +=  e.toString()+"\u005cn";
+        Compilador.errores = "";
+        Compilador.errores = e.toString()+"\u005cn";
+        System.out.println( Compilador.errores ); // Imprime el mensaje
 
         Token t;
 
@@ -482,12 +487,6 @@ public class Compilador implements CompiladorConstants {
     try { return !jj_3_1(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(0, xla); }
-  }
-
-  static private boolean jj_3R_21() {
-    if (jj_scan_token(INTEGRAL)) return true;
-    if (jj_scan_token(PARENTESIS_IZQUIERDO)) return true;
-    return false;
   }
 
   static private boolean jj_3R_11() {
@@ -729,6 +728,12 @@ public class Compilador implements CompiladorConstants {
 
   static private boolean jj_3R_18() {
     if (jj_3R_21()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_21() {
+    if (jj_scan_token(INTEGRAL)) return true;
+    if (jj_scan_token(PARENTESIS_IZQUIERDO)) return true;
     return false;
   }
 

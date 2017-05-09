@@ -772,10 +772,12 @@ public class MainVista {
 
 
 	private void texareaEntradaKeyReleased(KeyEvent evt) {
+		// codFuente.length() > 1 && evt.getKeyCode() == KeyEvent.VK_SEMICOLON
 		String codFuente = ((JTextArea) evt.getSource()).getText().trim();
+		int tamCodFuente = codFuente.length();
 		
-		if ( codFuente.length() > 1 ) {
-			
+		if ( codFuente.charAt(tamCodFuente-1) == ';' ) {
+			System.out.println("Debo analizar...");
 			CompilarCodFuente( codFuente );
 			
 			// try {

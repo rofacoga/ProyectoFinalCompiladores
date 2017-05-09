@@ -30,8 +30,8 @@ public class Compilador {
     
     if( codFuente != "" && codFuente != null ) {
       
-	  InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 )); //StandardCharsets.UTF_8 ) );
-	  // Compilador parser = new Compilador( codFuenteStream );//System.in );
+	  InputStream codFuenteStream = new ByteArrayInputStream( codFuente.getBytes( StandardCharsets.UTF_8 ));
+
 	  if( parser==null) parser = new Compilador( codFuenteStream ); else  ReInit( codFuenteStream );
 
 	  while (true) {
@@ -49,11 +49,12 @@ public class Compilador {
 	 	  errores += "Finalizando con Errores ParseException..."+"\n";
 	 	  System.out.println("Finalizando con Errores ParseException...");
 	 	  throw x;
-	 	} catch (TokenMgrError y) {
-	 	  errores += "Finalizando con Errores TokenMgrError..."+"\n";
-	 	  System.out.println("Finalizando con Errores TokenMgrError...");
-	 	  throw y;
 	 	}
+//	 	catch (TokenMgrError y) {
+//	 	  errores += "Finalizando con Errores TokenMgrError..."+"\n";
+//	 	  System.out.println("Finalizando con Errores TokenMgrError...");
+//	 	  throw y;
+//	 	}
 	  }
     }
   }
@@ -245,11 +246,11 @@ void factorSimple():
   numeros() | identificador() | expresionTrigonometrica() | integral() 
 }
 
-void matriz():
-{}
-{
-  
-}
+//void matriz():
+//{}
+//{
+//  
+//}
 
 // ------------------------------------------------------------
 // -- Parte de codigo de java para el salto de errores
@@ -258,8 +259,9 @@ JAVACODE
 void error_skipto(int kind) {
 	System.out.println( "Error!!!\n" ); // Imprime el mensaje
 	ParseException e = generateParseException(); // Genera el error sintactico
-	System.out.println( e.toString()+"\n" ); // Imprime el mensaje
-	this.errores +=  e.toString()+"\n";
+	Compilador.errores = "";
+	Compilador.errores = e.toString()+"\n";
+	System.out.println( Compilador.errores ); // Imprime el mensaje
 	
 	Token t;
 	
