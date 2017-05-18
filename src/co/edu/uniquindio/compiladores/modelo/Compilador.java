@@ -36,10 +36,10 @@ public class Compilador implements CompiladorConstants {
 
           while (true) {
                 try {
-                  switch (parser.one_line()) {
+                  switch ( parser.one_line() ) {
                         case -1:
-                          System.out.println("Final de Compilaci\ufffdn.");
-                          this.resultado += "\u005cn"+"Final de Compilaci\ufffdn.";
+                          System.out.println("Final de Compilaci\u00ef\u00bf\u00bdn.");
+                          this.resultado += "\u005cn"+"Final de Compilaci\u00ef\u00bf\u00bdn.";
                           return;
                           // System.exit(0);
                         default:
@@ -50,11 +50,6 @@ public class Compilador implements CompiladorConstants {
                   System.out.println("Finalizando con Errores ParseException...");
                   throw x;
                 }
-//	 	catch (TokenMgrError y) {
-//	 	  errores += "Finalizando con Errores TokenMgrError..."+"\n";
-//	 	  System.out.println("Finalizando con Errores TokenMgrError...");
-//	 	  throw y;
-//	 	}
           }
     }
   }
@@ -94,8 +89,8 @@ public class Compilador implements CompiladorConstants {
         }
       }
     } catch (ParseException e) {
-                error_skipto(FINAL_LINEA);
-                {if (true) return 1;}
+        error_skipto( EOF );
+        {if (true) return 1;}
     }
     throw new Error("Missing return statement in function");
   }
@@ -157,7 +152,8 @@ public class Compilador implements CompiladorConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ENTERO:
     case DOBLE:
-      declaracionVariable();
+      tipoVariable();
+      declaracion();
       break;
     case DIGITOS:
     case LETRA_MIN:
@@ -193,8 +189,22 @@ public class Compilador implements CompiladorConstants {
     }
   }
 
+  static final public void declaracion() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case CORCHETE_IZQUIERDO:
+      declaracionMatriz();
+      break;
+    case LETRA_MIN:
+      declaracionVariable();
+      break;
+    default:
+      jj_la1[5] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
   static final public void declaracionVariable() throws ParseException {
-    tipoVariable();
     identificador();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ASIGNACION:
@@ -202,7 +212,7 @@ public class Compilador implements CompiladorConstants {
       factor();
       break;
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[6] = jj_gen;
       ;
     }
   }
@@ -216,7 +226,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(DOBLE);
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -235,7 +245,7 @@ public class Compilador implements CompiladorConstants {
       termino();
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[8] = jj_gen;
       ;
     }
   }
@@ -261,7 +271,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(MODULO);
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[9] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -289,7 +299,7 @@ public class Compilador implements CompiladorConstants {
       integral();
       break;
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -302,7 +312,7 @@ public class Compilador implements CompiladorConstants {
       signo();
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[11] = jj_gen;
       ;
     }
     jj_consume_token(DIGITOS);
@@ -312,7 +322,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(DIGITOS);
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[12] = jj_gen;
       ;
     }
   }
@@ -326,7 +336,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(RESTA);
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -339,7 +349,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(DIGITOS);
       break;
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[14] = jj_gen;
       ;
     }
   }
@@ -354,7 +364,7 @@ public class Compilador implements CompiladorConstants {
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[15] = jj_gen;
         break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -365,7 +375,7 @@ public class Compilador implements CompiladorConstants {
         jj_consume_token(LETRA_MAY);
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -399,7 +409,7 @@ public class Compilador implements CompiladorConstants {
       teta();
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[17] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -434,7 +444,7 @@ public class Compilador implements CompiladorConstants {
       numeros();
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[18] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -462,18 +472,32 @@ public class Compilador implements CompiladorConstants {
       integral();
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[19] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
   }
 
+  static final public void declaracionMatriz() throws ParseException {
+    jj_consume_token(CORCHETE_IZQUIERDO);
+    jj_consume_token(CORCHETE_DERECHO);
+    identificador();
+    jj_consume_token(ASIGNACION);
+    tipoVariable();
+    jj_consume_token(CORCHETE_IZQUIERDO);
+    jj_consume_token(DIGITOS);
+    jj_consume_token(CORCHETE_DERECHO);
+    jj_consume_token(CORCHETE_IZQUIERDO);
+    jj_consume_token(DIGITOS);
+    jj_consume_token(CORCHETE_DERECHO);
+  }
+
   static void error_skipto(int kind) throws ParseException {
-        System.out.println( "Error!!!\u005cn" ); // Imprime el mensaje
+        System.out.println( "Error!!!" ); // Imprime el mensaje
         ParseException e = generateParseException(); // Genera el error sintactico
         Compilador.errores = "";
         Compilador.errores = e.toString()+"\u005cn";
-        System.out.println( Compilador.errores ); // Imprime el mensaje
+        //System.out.println( Compilador.errores ); // Imprime el mensaje
 
         Token t;
 
@@ -489,38 +513,38 @@ public class Compilador implements CompiladorConstants {
     finally { jj_save(0, xla); }
   }
 
-  static private boolean jj_3R_11() {
+  static private boolean jj_3R_12() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_15()) {
-    jj_scanpos = xsp;
-    if (jj_3R_16()) {
-    jj_scanpos = xsp;
     if (jj_3R_17()) {
     jj_scanpos = xsp;
-    if (jj_3R_18()) return true;
+    if (jj_3R_18()) {
+    jj_scanpos = xsp;
+    if (jj_3R_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) return true;
     }
     }
     }
     return false;
   }
 
-  static private boolean jj_3R_15() {
-    if (jj_3R_19()) return true;
+  static private boolean jj_3R_17() {
+    if (jj_3R_22()) return true;
     return false;
   }
 
-  static private boolean jj_3R_32() {
+  static private boolean jj_3R_36() {
     if (jj_scan_token(PARENTESIS_IZQUIERDO)) return true;
     return false;
   }
 
-  static private boolean jj_3R_12() {
-    if (jj_3R_13()) return true;
+  static private boolean jj_3R_13() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
-  static private boolean jj_3R_31() {
+  static private boolean jj_3R_35() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(7)) {
@@ -530,25 +554,19 @@ public class Compilador implements CompiladorConstants {
     return false;
   }
 
-  static private boolean jj_3R_29() {
+  static private boolean jj_3R_33() {
     if (jj_scan_token(COSECANTE)) return true;
-    if (jj_3R_32()) return true;
+    if (jj_3R_36()) return true;
     return false;
   }
 
-  static private boolean jj_3_1() {
-    if (jj_3R_3()) return true;
-    if (jj_scan_token(FINAL_LINEA)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_28() {
+  static private boolean jj_3R_32() {
     if (jj_scan_token(SECANTE)) return true;
-    if (jj_3R_32()) return true;
+    if (jj_3R_36()) return true;
     return false;
   }
 
-  static private boolean jj_3R_13() {
+  static private boolean jj_3R_14() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(9)) {
@@ -570,110 +588,120 @@ public class Compilador implements CompiladorConstants {
     return false;
   }
 
-  static private boolean jj_3R_27() {
+  static private boolean jj_3R_31() {
     if (jj_scan_token(COTANGENTE)) return true;
-    if (jj_3R_32()) return true;
+    if (jj_3R_36()) return true;
     return false;
   }
 
-  static private boolean jj_3R_26() {
+  static private boolean jj_3R_30() {
     if (jj_scan_token(TANGENTE)) return true;
-    if (jj_3R_32()) return true;
+    if (jj_3R_36()) return true;
     return false;
   }
 
-  static private boolean jj_3R_25() {
+  static private boolean jj_3R_29() {
     if (jj_scan_token(COSENO)) return true;
-    if (jj_3R_32()) return true;
+    if (jj_3R_36()) return true;
     return false;
   }
 
-  static private boolean jj_3R_24() {
+  static private boolean jj_3_1() {
+    if (jj_3R_3()) return true;
+    if (jj_scan_token(FINAL_LINEA)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_28() {
     if (jj_scan_token(SENO)) return true;
-    if (jj_3R_32()) return true;
+    if (jj_3R_36()) return true;
     return false;
   }
 
-  static private boolean jj_3R_23() {
+  static private boolean jj_3R_27() {
     if (jj_scan_token(PUNTO)) return true;
     return false;
   }
 
-  static private boolean jj_3R_20() {
+  static private boolean jj_3R_23() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_24()) {
-    jj_scanpos = xsp;
-    if (jj_3R_25()) {
-    jj_scanpos = xsp;
-    if (jj_3R_26()) {
-    jj_scanpos = xsp;
-    if (jj_3R_27()) {
-    jj_scanpos = xsp;
     if (jj_3R_28()) {
     jj_scanpos = xsp;
-    if (jj_3R_29()) return true;
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_7() {
-    if (jj_3R_11()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_12()) jj_scanpos = xsp;
-    return false;
-  }
-
-  static private boolean jj_3R_17() {
-    if (jj_3R_20()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_14() {
-    if (jj_scan_token(LETRA_MIN)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_31()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_9() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(28)) {
+    if (jj_3R_29()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(29)) return true;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) {
+    jj_scanpos = xsp;
+    if (jj_3R_33()) return true;
+    }
+    }
+    }
+    }
     }
     return false;
   }
 
   static private boolean jj_3R_8() {
-    if (jj_3R_13()) return true;
+    if (jj_3R_12()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_13()) jj_scanpos = xsp;
     return false;
   }
 
-  static private boolean jj_3R_10() {
-    if (jj_3R_14()) return true;
+  static private boolean jj_3R_19() {
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_25() {
+    if (jj_scan_token(LETRA_MIN)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_35()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_6() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(26)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(27)) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_21() {
+    if (jj_3R_25()) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(6)) jj_scanpos = xsp;
     return false;
   }
 
-  static private boolean jj_3R_6() {
-    if (jj_3R_9()) return true;
-    if (jj_3R_10()) return true;
+  static private boolean jj_3R_15() {
+    if (jj_scan_token(CORCHETE_IZQUIERDO)) return true;
     return false;
   }
 
-  static private boolean jj_3R_30() {
+  static private boolean jj_3R_9() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_16() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_34() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(9)) {
@@ -683,16 +711,62 @@ public class Compilador implements CompiladorConstants {
     return false;
   }
 
-  static private boolean jj_3R_5() {
-    if (jj_3R_7()) return true;
+  static private boolean jj_3R_11() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_7() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_8()) jj_scanpos = xsp;
+    if (jj_3R_10()) {
+    jj_scanpos = xsp;
+    if (jj_3R_11()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_10() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_26() {
+    if (jj_3R_34()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_18() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_22() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_26()) jj_scanpos = xsp;
+    if (jj_scan_token(DIGITOS)) return true;
+    xsp = jj_scanpos;
+    if (jj_3R_27()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3R_20() {
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_5() {
+    if (jj_3R_8()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_9()) jj_scanpos = xsp;
     return false;
   }
 
   static private boolean jj_3R_4() {
     if (jj_3R_6()) return true;
+    if (jj_3R_7()) return true;
     return false;
   }
 
@@ -706,32 +780,7 @@ public class Compilador implements CompiladorConstants {
     return false;
   }
 
-  static private boolean jj_3R_22() {
-    if (jj_3R_30()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_16() {
-    if (jj_3R_10()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_19() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_22()) jj_scanpos = xsp;
-    if (jj_scan_token(DIGITOS)) return true;
-    xsp = jj_scanpos;
-    if (jj_3R_23()) jj_scanpos = xsp;
-    return false;
-  }
-
-  static private boolean jj_3R_18() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_21() {
+  static private boolean jj_3R_24() {
     if (jj_scan_token(INTEGRAL)) return true;
     if (jj_scan_token(PARENTESIS_IZQUIERDO)) return true;
     return false;
@@ -749,7 +798,7 @@ public class Compilador implements CompiladorConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[19];
+  static final private int[] jj_la1 = new int[20];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -757,10 +806,10 @@ public class Compilador implements CompiladorConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1,0xb01f86c0,0xb01f86c0,0x7e00,0xb01f86c0,0x0,0x30000000,0x7e00,0x7e00,0x801f86c0,0x600,0x0,0x600,0x40,0x180,0x180,0x1f8000,0x6c0,0x801f86c0,};
+      jj_la1_0 = new int[] {0x1,0x2c1f86c0,0x2c1f86c0,0x7e00,0x2c1f86c0,0x800080,0x80000000,0xc000000,0x7e00,0x7e00,0x201f86c0,0x600,0x0,0x600,0x40,0x180,0x180,0x1f8000,0x6c0,0x201f86c0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x10,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[1];
   static private boolean jj_rescan = false;
@@ -784,7 +833,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -799,7 +848,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -817,7 +866,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -828,7 +877,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -845,7 +894,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -855,7 +904,7 @@ public class Compilador implements CompiladorConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -967,12 +1016,12 @@ public class Compilador implements CompiladorConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[37];
+    boolean[] la1tokens = new boolean[35];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 19; i++) {
+    for (int i = 0; i < 20; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -984,7 +1033,7 @@ public class Compilador implements CompiladorConstants {
         }
       }
     }
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 35; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

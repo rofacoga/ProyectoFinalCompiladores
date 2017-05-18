@@ -45,33 +45,29 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int PARENTESIS_DERECHO = 22;
   /** RegularExpression Id. */
-  int LLAVE_IZQUIERDA = 23;
+  int CORCHETE_IZQUIERDO = 23;
   /** RegularExpression Id. */
-  int LLAVE_DERECHA = 24;
+  int CORCHETE_DERECHO = 24;
   /** RegularExpression Id. */
-  int CORCHETE_IZQUIERDO = 25;
+  int RAIZ = 25;
   /** RegularExpression Id. */
-  int CORCHETE_DERECHO = 26;
+  int ENTERO = 26;
   /** RegularExpression Id. */
-  int RAIZ = 27;
+  int DOBLE = 27;
   /** RegularExpression Id. */
-  int ENTERO = 28;
+  int FLOTANTE = 28;
   /** RegularExpression Id. */
-  int DOBLE = 29;
+  int INTEGRAL = 29;
   /** RegularExpression Id. */
-  int FLOTANTE = 30;
+  int DX_INTEGRAL = 30;
   /** RegularExpression Id. */
-  int INTEGRAL = 31;
+  int ASIGNACION = 31;
   /** RegularExpression Id. */
-  int DX_INTEGRAL = 32;
+  int COMA = 32;
   /** RegularExpression Id. */
-  int ASIGNACION = 33;
+  int PUNTO = 33;
   /** RegularExpression Id. */
-  int COMA = 34;
-  /** RegularExpression Id. */
-  int PUNTO = 35;
-  /** RegularExpression Id. */
-  int FINAL_LINEA = 36;
+  int FINAL_LINEA = 34;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -101,8 +97,6 @@ public interface CompiladorConstants {
     "\"Cot\"",
     "\"(\"",
     "\")\"",
-    "\"{\"",
-    "\"}\"",
     "\"[\"",
     "\"]\"",
     "\"Rai\"",

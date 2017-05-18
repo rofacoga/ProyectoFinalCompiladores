@@ -36,7 +36,7 @@ public class Compilador {
 
 	  while (true) {
 	 	try {
-	 	  switch (parser.one_line()) {
+	 	  switch ( parser.one_line() ) {
 	 		case -1:
 	 		  System.out.println("Final de Compilaci�n.");
 	 		  this.resultado += "\n"+"Final de Compilaci�n.";
@@ -50,11 +50,6 @@ public class Compilador {
 	 	  System.out.println("Finalizando con Errores ParseException...");
 	 	  throw x;
 	 	}
-//	 	catch (TokenMgrError y) {
-//	 	  errores += "Finalizando con Errores TokenMgrError..."+"\n";
-//	 	  System.out.println("Finalizando con Errores TokenMgrError...");
-//	 	  throw y;
-//	 	}
 	  }
     }
   }
@@ -96,8 +91,6 @@ TOKEN : {
 | < COTANGENTE 			: "Cot" >
 | < PARENTESIS_IZQUIERDO : "(" >
 | < PARENTESIS_DERECHO 	: ")" >
-| < LLAVE_IZQUIERDA 	: "{" >
-| < LLAVE_DERECHA 		: "}" >
 | < CORCHETE_IZQUIERDO 	: "[" >
 | < CORCHETE_DERECHO 	: "]" >
 | < RAIZ 				: "Rai" >
@@ -120,16 +113,16 @@ TOKEN : {
 int one_line() :
 {}
 {
-	try {
+  try {
 	LOOKAHEAD(2)
 	
 	expresionAritmetica() <FINAL_LINEA> { return 1; }
 		| <FINAL_LINEA> { return 0; }
 		| <EOF> { return -1; }
-	} catch(ParseException e) {
-		error_skipto(FINAL_LINEA);
-		return 1;
-	}
+  } catch(ParseException e) {
+	error_skipto( EOF );
+	return 1;
+  }
 }
 
 void start():
@@ -147,14 +140,20 @@ void linea():
 void expresionAritmetica():
 {}
 {
-  declaracionVariable()  
+  tipoVariable() declaracion()  
 | termino() [ operadores() expresionAritmetica() ]
+}
+
+void declaracion(): { }
+{
+  declaracionMatriz() 
+| declaracionVariable() 
 }
 
 void declaracionVariable():
 {}
 {
-  tipoVariable() identificador() [ < ASIGNACION > factor() ]
+  identificador() [ < ASIGNACION > factor() ]
 }
 
 void tipoVariable():
@@ -246,22 +245,24 @@ void factorSimple():
   numeros() | identificador() | expresionTrigonometrica() | integral() 
 }
 
-//void matriz():
-//{}
-//{
-//  
-//}
+void declaracionMatriz():
+{}
+{
+  < CORCHETE_IZQUIERDO > < CORCHETE_DERECHO > identificador() 
+	< ASIGNACION > tipoVariable() < CORCHETE_IZQUIERDO > < DIGITOS > < CORCHETE_DERECHO >
+									< CORCHETE_IZQUIERDO > < DIGITOS > < CORCHETE_DERECHO > 
+}
 
 // ------------------------------------------------------------
 // -- Parte de codigo de java para el salto de errores
 // ------------------------------------------------------------
 JAVACODE
 void error_skipto(int kind) {
-	System.out.println( "Error!!!\n" ); // Imprime el mensaje
+	System.out.println( "Error!!!" ); // Imprime el mensaje
 	ParseException e = generateParseException(); // Genera el error sintactico
 	Compilador.errores = "";
 	Compilador.errores = e.toString()+"\n";
-	System.out.println( Compilador.errores ); // Imprime el mensaje
+	//System.out.println( Compilador.errores ); // Imprime el mensaje
 	
 	Token t;
 	

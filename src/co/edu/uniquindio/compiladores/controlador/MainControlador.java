@@ -3,12 +3,12 @@
  */
 package co.edu.uniquindio.compiladores.controlador;
 
+import org.json.simple.JSONObject;
+
 import co.edu.uniquindio.compiladores.modelo.Compilador;
 import co.edu.uniquindio.compiladores.modelo.ParseException;
-import co.edu.uniquindio.compiladores.modelo.Token;
 import co.edu.uniquindio.compiladores.modelo.TokenMgrError;
 import co.edu.uniquindio.compiladores.vista.MainVista;
-import org.json.simple.JSONObject;
 
 /**
  * 

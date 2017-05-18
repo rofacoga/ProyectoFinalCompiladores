@@ -560,6 +560,7 @@ public class MainVista {
 			erroresTxtArea.setText( "Panel "+indexPanel+": "+errores );
 			
 		} else {
+			erroresTxtArea.setText("");
 			JOptionPane.showMessageDialog(frame, "No hay codigo para analizar... D=");
 		}
 	}
@@ -773,27 +774,31 @@ public class MainVista {
 
 	private void texareaEntradaKeyReleased(KeyEvent evt) {
 		// codFuente.length() > 1 && evt.getKeyCode() == KeyEvent.VK_SEMICOLON
-		String codFuente = ((JTextArea) evt.getSource()).getText().trim();
-		int tamCodFuente = codFuente.length();
-		
-		if ( codFuente.charAt(tamCodFuente-1) == ';' ) {
-			System.out.println("Debo analizar...");
+		if ( evt.getKeyCode() != KeyEvent.VK_SPACE && evt.getKeyCode() != KeyEvent.VK_ENTER ) {
+			String codFuente = ((JTextArea) evt.getSource()).getText().trim();
 			CompilarCodFuente( codFuente );
-			
-			// try {
-			// System.out.println( codFuente );
-			// int indexPanel = panelesTabPane.getSelectedIndex()+1;
-			// erroresTxtArea.setText( "Panel "+indexPanel+": "+codFuente );
-			//	compilar( ((JTextArea) evt.getSource()).getText() );
-			// 	if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-			//		compilar( ((JTextArea) evt.getSource()).getText() );
-			// 	}
-			// } catch (UnsupportedEncodingException e) {
-			// 	e.printStackTrace();
-			// }
-		} else {
-			erroresTxtArea.setText( "" );
 		}
+		
+		
+//		int tamCodFuente = codFuente.length();
+//		
+//		if ( codFuente.charAt(tamCodFuente-1) == ';' ) {
+//			CompilarCodFuente( codFuente );
+//			
+//			// try {
+//			// System.out.println( codFuente );
+//			// int indexPanel = panelesTabPane.getSelectedIndex()+1;
+//			// erroresTxtArea.setText( "Panel "+indexPanel+": "+codFuente );
+//			//	compilar( ((JTextArea) evt.getSource()).getText() );
+//			// 	if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+//			//		compilar( ((JTextArea) evt.getSource()).getText() );
+//			// 	}
+//			// } catch (UnsupportedEncodingException e) {
+//			// 	e.printStackTrace();
+//			// }
+//		} else {
+//			erroresTxtArea.setText( "" );
+//		}
 	}
 
 	public JTabbedPane getTabbedPane() {
